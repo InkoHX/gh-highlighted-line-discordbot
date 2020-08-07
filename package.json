@@ -1,0 +1,7 @@
+{
+  "name": "gh-highlighted-line-discordbot",
+  "main": "dist/index.js",
+  "repository": "https://github.com/InkoHX/gh-highlighted-line-discordbot.git",
+  "author": "InkoHX <inkohx@gmail.com>",
+  "license": "MIT"
+}
