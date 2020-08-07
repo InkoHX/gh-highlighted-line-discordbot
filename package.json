@@ -3,5 +3,15 @@
   "main": "dist/index.js",
   "repository": "https://github.com/InkoHX/gh-highlighted-line-discordbot.git",
   "author": "InkoHX <inkohx@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^12.2.0",
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.27",
+    "@types/node-fetch": "^2.5.7",
+    "@types/ws": "^7.2.6",
+    "typescript": "^3.9.7"
+  }
 }
