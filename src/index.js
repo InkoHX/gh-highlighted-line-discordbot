@@ -9,13 +9,12 @@ const client = new Client({
   }
 })
 
-client.on('message', message => {
+const searchHighlightedLink = content => {
   const HIGHLIGHTED_URL_PATTERN = /https?:\/\/github\.com\/(?<owner>.*)\/(?<repo>.*)\/blob\/(?<branch>.*?)\/(?<path>.*)#L(?<firstLine>[0-9]+)-?L?(?<lastLine>[0-9]+)?/gu
-  let result
+  const result = []
+  let regexResult
 
-  if (message.author.bot || message.system) return
-
-  while ((result = HIGHLIGHTED_URL_PATTERN.exec(message.content)) !== null) {
+  while ((regexResult = HIGHLIGHTED_URL_PATTERN.exec(content)) !== null) {
     const {
       owner,
       repo,
@@ -23,13 +22,31 @@ client.on('message', message => {
       path,
       firstLine,
       lastLine
-    } = result.groups
+    } = regexResult.groups
 
-    fetch(`https://gh-highlighted-line.vercel.app/api/${owner}/${repo}/${branch}/${encodeURIComponent(path)}/${firstLine}/${lastLine ?? ''}`)
-      .then(response => response.json())
-      .then(response => message.reply(response.code.join('\n'), { code: response.extension ?? 'livecodeserver', split: true }))
-      .catch(console.error)
+    result.push({
+      owner,
+      repo,
+      branch,
+      path,
+      firstLine,
+      lastLine
+    })
   }
+
+  return result
+}
+
+client.on('message', message => {
+  if (message.author.bot || message.system) return
+
+  const highlightedLinks = searchHighlightedLink(message.content)
+  
+  Promise.all(highlightedLinks.map(value => fetch(`https://gh-highlighted-line.vercel.app/api/${value.owner}/${value.repo}/${value.branch}/${encodeURIComponent(value.path)}/${value.firstLine}/${value.lastLine ?? ''}`)))
+    .then(responses => Promise.all(responses.map(response => response.json())))
+    .then(contents => contents.filter(content => content.code.length))
+    .then(contents => Promise.all(contents.map(content => message.reply(content.code.join('\n'), { code: content.extension ?? 'livecodeserver', split: true }))))
+    .catch(console.error)
 })
 
 client.login()
