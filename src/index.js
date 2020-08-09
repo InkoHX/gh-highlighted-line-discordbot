@@ -10,7 +10,7 @@ const client = new Client({
 })
 
 client.on('message', message => {
-  const HIGHLIGHTED_URL_PATTERN = /http(?:s):\/\/github\.com\/(?<owner>.*)\/(?<repo>.*)\/blob\/(?<branch>.*?)\/(?<path>.*)#L(?<firstLine>[0-9]+)-?L?(?<lastLine>[0-9]+)?/gu
+  const HIGHLIGHTED_URL_PATTERN = /https?:\/\/github\.com\/(?<owner>.*)\/(?<repo>.*)\/blob\/(?<branch>.*?)\/(?<path>.*)#L(?<firstLine>[0-9]+)-?L?(?<lastLine>[0-9]+)?/gu
   let result
 
   if (message.author.bot || message.system) return
